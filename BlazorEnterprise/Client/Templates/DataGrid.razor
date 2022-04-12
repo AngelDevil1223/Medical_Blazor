@@ -1,0 +1,105 @@
+﻿@typeparam TItem
+@inject IJSRuntime JSRuntime;
+@*@inject ApplicationDbContext db;*@
+
+<div class="iq-card">
+    <div class="iq-card-header d-flex justify-content-between">
+        <div class="iq-header-title">
+            @GridActions
+        </div>
+    </div>
+    <div class="iq-card-body">
+        <div class="table-responsive">
+            <table id="datatable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="table_checkbox">
+                            @if (Items != null && Items.Count > 0)
+                            {
+                                <input type="checkbox" class="select_row" @onclick="SelectAll" />
+                            }
+                        </th>
+                        @GridHeader
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Items)
+                    {
+                        <tr>
+                            <td><input type="checkbox" class="select_row" @onclick="@(()=>OnSelect(item))" /></td>
+                            @RowTemplate(item)
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment GridHeader { get; set; }
+
+    [Parameter]
+    public RenderFragment GridActions { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> RowTemplate { get; set; }
+
+    [Parameter]
+    public List<TItem> Items { get; set; }
+
+    [Parameter]
+    public EventCallback OnRefresh { get; set; }
+
+    [Parameter]
+    public bool HideDelete { get; set; }
+
+    [Parameter]
+    public bool HideRefresh { get; set; }
+
+    bool allSelected;
+
+    public List<TItem> SelectedItems { get; set; } = new List<TItem>();
+
+    public string CanExecute => (SelectedItems.Count > 0) ? "" : "disabled";
+
+    private void OnSelect(TItem item)
+    {
+        var ix = SelectedItems.IndexOf(item);
+        if (ix == -1)
+            SelectedItems.Add(item);
+        else
+            SelectedItems.Remove(item);
+    }
+
+    public async void SelectAll()
+    {
+        if (allSelected)
+        {
+            SelectedItems.Clear();
+            allSelected = false;
+            await JSRuntime.InvokeVoidAsync("untickdatagrid");
+        }
+        else
+        {
+            SelectedItems.AddRange(Items);
+            allSelected = true;
+            await JSRuntime.InvokeVoidAsync("tickdatagrid");
+        }
+        StateHasChanged();
+    }
+
+    public void Remove()
+    {
+        //db.RemoveRange(SelectedItems);
+        //db.SaveChanges();
+        //Items = new List<TItem>();
+        //StateHasChanged();
+    }
+
+    public void UpdateData(List<TItem> data)
+    {
+        Items = data;
+    }
+}

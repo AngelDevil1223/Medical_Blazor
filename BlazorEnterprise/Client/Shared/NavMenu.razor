@@ -1,0 +1,51 @@
+﻿<div class="iq-sidebar">
+    <div class="iq-sidebar-logo d-flex justify-content-between">
+        <a href="index.html">
+            <img src="images/logo.png" class="img-fluid" alt="">
+            <span>Blazor App</span>
+        </a>
+        <div class="iq-menu-bt-sidebar">
+            <div class="iq-menu-bt align-self-center">
+                <div class="wrapper-menu">
+                    <div class="main-circle"><i class="ri-more-fill"></i></div>
+                    <div class="hover-circle"><i class="ri-more-2-fill"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="sidebar-scrollbar">
+        <nav class="iq-sidebar-menu">
+            <ul id="iq-sidebar-toggle" class="iq-menu">
+                <li class="iq-menu-title"><i class="ri-subtract-line"></i><span>Dashboard</span></li>
+                <li>
+                    <a href="#authentication" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-server-fill"></i><span>Authentication</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                    <ul id="authentication" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li><a href="sign-in.html"><i class="ri-login-box-fill"></i>Login</a></li>
+                        <li><a href="sign-up.html"><i class="ri-logout-box-fill"></i>Register</a></li>
+                        <li><a href="pages-recoverpw.html"><i class="ri-record-mail-fill"></i>Recover Password</a></li>
+                        <li><a href="pages-confirm-mail.html"><i class="ri-chat-check-fill"></i>Confirm Mail</a></li>
+                        <li><a href="pages-lock-screen.html"><i class="ri-file-lock-fill"></i>Lock Screen</a></li>
+                    </ul>
+                </li>
+                <li class="menu-level">
+                    <a href="#menu-level-1" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-record-circle-line"></i><span>Menu Level</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                    <ul id="menu-level-1" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Menu 1</a></li>
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Menu 2</a></li>
+                        <li>
+                            <a href="#submenu-2" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-record-circle-line"></i><span>Menu 3</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                            <ul id="submenu-2" class="iq-submenu collapse">
+                                <li><a href="#"><i class="ri-record-circle-line"></i>Menu 3.1</a></li>
+                                <li><a href="#"><i class="ri-record-circle-line"></i>Menu 3.2</a></li>
+                                <li><a href="#"><i class="ri-record-circle-line"></i>Menu 3.3</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Menu 4</a></li>
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Menu 5</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-3"></div>
+    </div>
+</div>
