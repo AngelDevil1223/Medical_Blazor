@@ -4,13 +4,13 @@
             <div class="top-logo">
                 <a href="index.html" class="logo">
                     <img src="images/logo.png" class="img-fluid" alt="">
-                    <span>XRay</span>
+                    <span>Blazor Enterprise</span>
                 </a>
             </div>
         </div>
         <nav class="navbar navbar-expand-lg navbar-light p-0">
             <div class="iq-search-bar">
-                <h3>Screen name</h3>
+                <h3>@ScreenName</h3>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="ri-menu-3-line"></i>
@@ -244,3 +244,9 @@
         </nav>
     </div>
 </div>
+
+@code
+{
+    [Parameter]
+    public string ScreenName { get; set; } 
+}
