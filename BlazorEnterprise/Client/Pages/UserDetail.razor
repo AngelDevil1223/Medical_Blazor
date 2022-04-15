@@ -1,0 +1,85 @@
+﻿@page "/userDetail/{UserId}"
+@inject HttpClient Http
+@using BlazorEnterprise.Shared
+@using System.Net.Http.Json
+<TopBar ScreenName="Home" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="iq-card">
+                <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-header-title">
+                        <h4 class="card-title">@Title</h4>
+                    </div>
+                </div>
+                <div class="iq-card-body">
+                    <form>
+                        <div class="form-group">
+                            <div class="add-img-user profile-img-edit">
+                                <img class="profile-pic img-fluid" src="images/user/11.png" alt="profile-pic">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="iq-card">
+                <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-header-title">
+                        <h4 class="card-title">New User Information</h4>
+                    </div>
+                </div>
+                <div class="iq-card-body">
+                    <div class="new-user-info">
+                        <form>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="fname">Email:</label>
+                                    <input type="text" class="form-control" id="fname" placeholder="Email address">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="lname">Phone Number:</label>
+                                    <input type="text" class="form-control" id="lname" placeholder="Phone Number">
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="add1">Full Name:</label>
+                                    <input type="text" class="form-control" id="add1" placeholder="Full Name">
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <label>Role:</label>
+                                    <select class="form-control" id="selectcountry">
+                                        <option>Admin</option>
+                                        <option>User</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+                            <h5 class="mb-3">Security</h5>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="pass">Password:</label>
+                                    <input type="password" class="form-control" id="pass" placeholder="Password">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="rpass">Repeat Password:</label>
+                                    <input type="password" class="form-control" id="rpass" placeholder="Repeat Password ">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+
+    string Title => UserId == "0" ? "New User" : "Edit User";
+
+    UserViewModel User = new();
+}
