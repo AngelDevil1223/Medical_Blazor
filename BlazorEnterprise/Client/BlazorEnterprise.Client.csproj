@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Templates\NavMenuItem.razor" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
@@ -15,5 +19,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\BlazorEnterprise.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Templates\NavMenuItem.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Templates\NavMenuItem.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Templates\NavMenuItem.razor" />
   </ItemGroup>
 </Project>
