@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorEnterprise.Server.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
