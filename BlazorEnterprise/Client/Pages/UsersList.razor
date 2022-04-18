@@ -62,6 +62,7 @@
         ActiveScreen.Screen = "Users";
         try
         {
+            var st=await Http.GetStringAsync("/api/Users/AllUsers");
             Users = await Http.GetFromJsonAsync<UserViewModel[]>("/api/Users/AllUsers");
         }
         catch(Exception ex)
