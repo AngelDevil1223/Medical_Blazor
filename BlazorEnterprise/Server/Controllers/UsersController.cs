@@ -2,14 +2,13 @@
 using BlazorEnterprise.Server.Models;
 using BlazorEnterprise.Shared;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlazorEnterprise.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -22,15 +21,11 @@ namespace BlazorEnterprise.Server.Controllers
             _userManager = userManager;
         }
         [Route("AllUsers"),HttpGet]
-        public IEnumerable<UserViewModel> AllUsers()
+        public IEnumerable<BlazorEnterprise.Shared.UserViewModel> AllUsers()
         {
-            var users = _context.Users.ToList();
-            var roles = _context.Roles.ToList();
-            var uroles = _context.UserRoles.ToList();
-
-            var uulist = from u in users
-                         join ur in uroles on u.Id equals ur.UserId
-                         join r in roles on ur.RoleId equals r.Id
+            var uulist = from u in _context.Users
+                         join ur in _context.UserRoles on u.Id equals ur.UserId
+                         join r in _context.Roles on ur.RoleId equals r.Id
                          select new UserViewModel()
                          {
                              EmailAddress = u.Email,
@@ -45,16 +40,13 @@ namespace BlazorEnterprise.Server.Controllers
         }
 
         [Route("UserDetails"), HttpGet]
-        public UserViewModel UserDetails(string id)
+        public BlazorEnterprise.Shared.UserViewModel UserDetails(string id)
         {
-            var users = _context.Users.Where(x=>x.Id==id).ToList();
-            var roles = _context.Roles.ToList();
-            var uroles = _context.UserRoles.Where(x => x.UserId == id).ToList();
-
-            var uulist = from u in users
-                         join ur in uroles on u.Id equals ur.UserId
-                         join r in roles on ur.RoleId equals r.Id
-                         select new UserViewModel()
+            var uulist = from u in _context.Users
+                         join ur in _context.UserRoles on u.Id equals ur.UserId
+                         join r in _context.Roles on ur.RoleId equals r.Id
+                         where u.Id==id
+                         select new BlazorEnterprise.Shared.UserViewModel()
                          {
                              EmailAddress = u.Email,
                              FullName = u.FullName,
@@ -67,8 +59,8 @@ namespace BlazorEnterprise.Server.Controllers
             return uulist.FirstOrDefault();
         }
 
-        [Route("Create"), HttpPost]
-        public string Create([FromBody] UserViewModel user)
+        [Route("AddUser"), HttpPost]
+        public string AddUser([FromBody] BlazorEnterprise.Shared.UserViewModel user)
         {
             try
             {
@@ -83,12 +75,12 @@ namespace BlazorEnterprise.Server.Controllers
                     FullName = user.FullName
                 };
                 _userManager.CreateAsync(usr, user.Password);
-                _context.UserRoles.Add(new IdentityUserRole<string>()
-                {
-                    RoleId = user.RoleId,
-                    UserId = usr.Id
-                });
-                _context.SaveChanges();
+                //_context.UserRoles.Add(new IdentityUserRole<string>()
+                //{
+                //    RoleId = user.RoleId,
+                //    UserId = usr.Id
+                //});
+                //_context.SaveChanges();
                 return "Success";
             }
             catch(Exception ex)
@@ -98,7 +90,7 @@ namespace BlazorEnterprise.Server.Controllers
         }
 
         [Route("Edit"), HttpPost]
-        public string Edit([FromBody] UserViewModel user)
+        public string Edit([FromBody] BlazorEnterprise.Shared.UserViewModel user)
         {
             try
             {

@@ -41,8 +41,8 @@
                         }
                         <EditForm Model="User" OnValidSubmit="PostForm">
                             <div class="text-danger">
-                                <DataAnnotationsValidator />
-                                <ValidationSummary />
+@*                                <DataAnnotationsValidator />
+                                <ValidationSummary />*@
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-6">
@@ -97,10 +97,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Roles = await Http.GetFromJsonAsync<RoleViewModel[]>("/api/Roles/AllRoles");
+        Roles = await Http.GetFromJsonAsync<RoleViewModel[]>("Roles/AllRoles");
         if (UserId != "0")
         {
-            User = await Http.GetFromJsonAsync<UserViewModel>($"/api/Users/UserDetails?id={UserId}");
+            User = await Http.GetFromJsonAsync<UserViewModel>($"Users/UserDetails?id={UserId}");
         }
     }
     string PostError = "";
@@ -111,12 +111,12 @@
             string resp = "";
             if (!IsEdit)
             {
-                var rq = await Http.PostAsJsonAsync("/api/Users/Create", User);
+                var rq = await Http.PostAsJsonAsync("Users/AddUser", User);
                 resp = await rq.Content.ReadAsStringAsync();
             }
             else
             {
-                var rq = await Http.PostAsJsonAsync("/api/Users/Edit", User);
+                var rq = await Http.PostAsJsonAsync("Users/Edit", User);
                 resp = await rq.Content.ReadAsStringAsync();
             }
             if(!resp.Contains("Success"))

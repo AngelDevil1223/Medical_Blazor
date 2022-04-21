@@ -13,5 +13,7 @@ builder.Services.AddHttpClient("BlazorEnterprise.ServerAPI", client => client.Ba
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("BlazorEnterprise.ServerAPI"));
 
 builder.Services.AddApiAuthorization();
+    //.AddAccountClaimsPrincipalFactory<CustomUserFactory>();
+//builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
 
 await builder.Build().RunAsync();
