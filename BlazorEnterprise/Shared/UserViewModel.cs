@@ -9,16 +9,26 @@ namespace BlazorEnterprise.Shared
 {
     public class UserViewModel
     {
+        public UserViewModel()
+        {
+            UserId = "0";
+            FullName = "";
+            EmailAddress = "";
+            PhoneNumber = "";
+            Password = "";
+            Role = "0";
+            RoleId = "0";
+        }
         public string UserId { get; set; }
-        //[Required(ErrorMessage = "Name is required")]
+        [Required(ErrorMessage = "Name is required")]
         public string FullName { get; set; }
-        //[Required(ErrorMessage = "Email address is required")]
+        [Required(ErrorMessage = "Email address is required")]
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
-        //[Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
         public string Role { get; set; }
-        //[Required(ErrorMessage ="A role is required")]
+        [Required(ErrorMessage = "A role is required")]
         public string RoleId { get; set; }
     }
 

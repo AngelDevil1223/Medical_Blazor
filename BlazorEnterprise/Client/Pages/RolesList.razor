@@ -1,9 +1,9 @@
-﻿@page "/users"
+﻿@page "/roles"
 @inject HttpClient Http
 @inject NavigationManager Nav
 @using BlazorEnterprise.Shared
 @using System.Net.Http.Json
-<TopBar ScreenName="Users"/>
+<TopBar ScreenName="Roles"/>
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -16,7 +16,7 @@
             <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                 <div class="iq-card-header d-flex justify-content-between">
                     <div class="iq-header-title">
-                        <button class="btn btn-primary" @onclick="AddUser">Add</button>
+                        <button class="btn btn-primary" @onclick="Add">Add</button>
                     </div>
                 </div>
                 <div class="iq-card-body">
@@ -24,9 +24,6 @@
                         <table class="table mb-0 table-borderless">
                             <thead>
                                 <tr>
-                                    <th scope="col">UserName</th>
-                                    <th scope="col">Full name</th>
-                                    <th scope="col">Phone number</th>
                                     <th scope="col">Role</th>
                                 </tr>
                             </thead>
@@ -34,13 +31,10 @@
                                 @foreach (var u in Users)
                                 {
                                     <tr>
-                                        <td>@u.EmailAddress</td>
-                                        <td>@u.FullName</td>
-                                        <td>@u.PhoneNumber</td>
-                                        <td>@u.Role</td>
+                                        <td>@u.RoleName</td>
                                         <td>
-                                            <button class="btn btn-info" @onclick="@(()=>EditUser(u))"><i class="ri-pencil-fill mr-2"></i> Edit</button>
-                                            <button class="btn btn-danger" @onclick="@(()=>DeleteUser(u))"><i class="ri-delete-bin-6-fill mr-2"></i> Delete</button>
+                                            <button class="btn btn-info" @onclick="@(()=>Edit(u))"><i class="ri-pencil-fill mr-2"></i> Edit</button>
+                                            <button class="btn btn-danger" @onclick="@(()=>Delete(u))"><i class="ri-delete-bin-6-fill mr-2"></i> Delete</button>
                                         </td>
                                     </tr>
                                 }
@@ -55,14 +49,14 @@
 @code
 {
     string Error = "";
-    UserViewModel[] Users = Array.Empty<UserViewModel>();
+    RoleViewModel[] Users = Array.Empty<RoleViewModel>();
     public string DisplayName { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        ActiveScreen.Screen = "Users";
+        ActiveScreen.Screen = "Roles";
         try
         {
-            Users = await Http.GetFromJsonAsync<UserViewModel[]>("Users/AllUsers");
+            Users = await Http.GetFromJsonAsync<RoleViewModel[]>("Roles/AllRoles");
         }
         catch(Exception ex)
         {
@@ -71,22 +65,22 @@
         }
     }
 
-    void AddUser()
+    void Add()
     {
-        Nav.NavigateTo("userDetail/0");
+        Nav.NavigateTo("roleDetail/0");
     }
 
-    void EditUser(UserViewModel user)
+    void Edit(RoleViewModel role)
     {
-        Nav.NavigateTo($"userDetail/{user.UserId}");
+        Nav.NavigateTo($"roleDetail/{role.RoleId}");
     }
 
-    async void DeleteUser(UserViewModel user)
+    async void Delete(RoleViewModel role)
     {
         Error = "";
         try
         {
-            var req = await Http.PostAsJsonAsync("Users/Delete", user.UserId);
+            var req = await Http.PostAsJsonAsync("Roles/Delete", role.RoleId);
             var res = await req.Content.ReadAsStringAsync();
             if(!res.Contains("Success"))
             {

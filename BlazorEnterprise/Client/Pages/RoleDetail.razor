@@ -1,0 +1,171 @@
+﻿@page "/roleDetail/{RoleId}"
+@inject HttpClient Http
+@inject NavigationManager Nav
+@using BlazorEnterprise.Shared
+@using System.Net.Http.Json
+<TopBar ScreenName="Home" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="iq-card">
+                <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-header-title">
+                        <h4 class="card-title">@Title</h4>
+                    </div>
+                </div>
+                <div class="iq-card-body">
+                    <form>
+                        <div class="form-group">
+                            <div class="add-img-user profile-img-edit">
+                                <img class="profile-pic img-fluid" src="images/user/11.png" alt="profile-pic">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="iq-card">
+                <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-header-title">
+                        <h4 class="card-title">Role details</h4>
+                    </div>
+                </div>
+                <div class="iq-card-body">
+                    <div class="new-user-info">
+                        @if (!string.IsNullOrEmpty(PostError))
+                        {
+                            <div class="alert alert-danger col-md-12">
+                                @PostError
+                            </div>
+                        }
+                        <EditForm Model="Role" OnValidSubmit="PostForm">
+                            <div class="text-danger">
+                                @*                                <DataAnnotationsValidator />
+                                    <ValidationSummary />*@
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="fname">Email:</label>
+                                    <InputText @bind-Value="Role.RoleName" class="form-control" placeholder="Role" disabled="@IsEdit"></InputText>
+                                </div>
+                            </div>
+                            <hr>
+                            <h5 class="mb-3">Permissions</h5>
+                            <div class="form-group col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control" @bind="SelectedRole">
+                                            <option>--Select screen--</option>
+                                            @foreach (var r in Screens)
+                                            {
+                                                <option value="@r.FullName">@r.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="" class="btn btn-success" @onclick:preventDefault @onclick="AddPermission">Add</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Permission</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var p in Role.Permissions)
+                                                {
+                                                    <tr>
+                                                        <td>@p.Name</td>
+                                                        <td>
+                                                            <button class="btn btn-danger" @onclick="@(()=>RemovePermission(p))"><i class="ri-delete-bin-6-fill mr-2"></i> Delete</button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public string RoleId { get; set; }
+
+    string Title => RoleId == "0" ? "New Role" : "Edit Role";
+    bool IsEdit => RoleId != "0";
+    RoleViewModel Role = new();
+    IEnumerable<Type> Screens;
+    string SelectedRole = "";
+    protected override async Task OnInitializedAsync()
+    {
+        if (RoleId != "0")
+        {
+            Role = await Http.GetFromJsonAsync<RoleViewModel>($"Roles/UserDetails?id={RoleId}");
+        }
+        Screens = ScreensProvider.Screens;
+    }
+    void AddPermission()
+    {
+        if (!string.IsNullOrEmpty(SelectedRole))
+        {
+            var prm = Screens.FirstOrDefault(x => x.FullName == SelectedRole);
+            if (prm != null)
+            {
+                Role.Permissions.Add(new()
+                    {
+                        NavigationObject = prm.FullName,
+                        Name = prm.Name
+                    });
+            }
+        }
+    }
+    void RemovePermission(RolePermissionModel perm)
+    {
+        Role.Permissions.Remove(perm);
+    }
+    string PostError = "";
+    async void PostForm()
+    {
+        try
+        {
+            string resp = "";
+            if (!IsEdit)
+            {
+                var rq = await Http.PostAsJsonAsync("Roles/Add", Role);
+                resp = await rq.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var rq = await Http.PostAsJsonAsync("Roles/Edit", Role);
+                resp = await rq.Content.ReadAsStringAsync();
+            }
+            if (!resp.Contains("Success"))
+            {
+                PostError = resp;
+                StateHasChanged();
+            }
+            else
+            {
+                Nav.NavigateTo("roles");
+            }
+        }
+        catch (Exception ex)
+        {
+            PostError = ex.Message;
+            StateHasChanged();
+        }
+    }
+}
