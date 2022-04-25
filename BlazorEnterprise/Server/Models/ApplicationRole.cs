@@ -14,5 +14,6 @@ namespace BlazorEnterprise.Server.Models
         public string RoleId { get; set; }
         public virtual ApplicationRole Role { get; set; }
         public string NavigationItem { get; set; }
+        public string Name { get; set; }
     }
 }

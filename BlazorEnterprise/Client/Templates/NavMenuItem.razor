@@ -1,8 +1,38 @@
-﻿@using BlazorEnterprise.Client.Templates
+﻿@*@attribute [Authorize]*@
+@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorEnterprise.Shared
+@inject HttpClient Http
+@using System.Linq
+@using System.Collections.Generic
+@using System.Reflection
 @typeparam TScreen
-<h3>NavMenuItem</h3>
+
+@if (ShowMenu)
+{
+    <li><a href="/@Route"><i class="@Icon"></i>@ChildContent</a></li>
+}
 
 @code {
+
     [Parameter]
-    public TScreen Screen { get; set; }
+    public string Route { get; set; }
+    [Parameter]
+    public string Icon { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    bool ShowMenu;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var tpName = typeof(TScreen);
+            ShowMenu = await Http.GetFromJsonAsync<bool>($"Users/HasPermission?uid={user.Identity.Name}&nav={tpName.FullName}");
+        }
+    }
 }

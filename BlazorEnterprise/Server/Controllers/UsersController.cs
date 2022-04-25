@@ -4,6 +4,7 @@ using BlazorEnterprise.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorEnterprise.Server.Controllers
 {
@@ -21,7 +22,7 @@ namespace BlazorEnterprise.Server.Controllers
             _userManager = userManager;
         }
         [Route("AllUsers"),HttpGet]
-        public IEnumerable<BlazorEnterprise.Shared.UserViewModel> AllUsers()
+        public IEnumerable<UserViewModel> AllUsers()
         {
             var uulist = from u in _context.Users
                          join ur in _context.UserRoles on u.Id equals ur.UserId
@@ -40,13 +41,13 @@ namespace BlazorEnterprise.Server.Controllers
         }
 
         [Route("UserDetails"), HttpGet]
-        public BlazorEnterprise.Shared.UserViewModel UserDetails(string id)
+        public UserViewModel UserDetails(string id)
         {
             var uulist = from u in _context.Users
                          join ur in _context.UserRoles on u.Id equals ur.UserId
                          join r in _context.Roles on ur.RoleId equals r.Id
                          where u.Id==id
-                         select new BlazorEnterprise.Shared.UserViewModel()
+                         select new UserViewModel()
                          {
                              EmailAddress = u.Email,
                              FullName = u.FullName,
@@ -59,8 +60,21 @@ namespace BlazorEnterprise.Server.Controllers
             return uulist.FirstOrDefault();
         }
 
+        [Route("HasPermission"), HttpGet]
+        public bool HasPermission(string uid,string nav)
+        {
+            var uulist = from p in _context.RolePermissions
+                         join r in _context.Roles on p.RoleId equals r.Id
+                         join ur in _context.UserRoles on r.Id equals ur.RoleId
+                         join u in _context.Users on ur.UserId equals u.Id
+                         where (p.NavigationItem == nav && u.UserName == uid) || r.Name == "Admin"
+                         select p.NavigationItem;
+
+            return uulist.Count() > 0;
+        }
+
         [Route("AddUser"), HttpPost]
-        public string AddUser([FromBody] BlazorEnterprise.Shared.UserViewModel user)
+        public string AddUser([FromBody] UserViewModel user)
         {
             try
             {
@@ -72,16 +86,21 @@ namespace BlazorEnterprise.Server.Controllers
                     UserName = user.EmailAddress,
                     Email = user.EmailAddress,
                     PhoneNumber = user.PhoneNumber,
-                    FullName = user.FullName
+                    FullName = user.FullName,
+                    EmailConfirmed=true
                 };
-                _userManager.CreateAsync(usr, user.Password);
-                //_context.UserRoles.Add(new IdentityUserRole<string>()
-                //{
-                //    RoleId = user.RoleId,
-                //    UserId = usr.Id
-                //});
-                //_context.SaveChanges();
-                return "Success";
+                var res=_userManager.CreateAsync(usr, user.Password).Result;
+                if (res.Succeeded)
+                {
+                    _context.UserRoles.Add(new IdentityUserRole<string>()
+                    {
+                        RoleId = user.RoleId,
+                        UserId = usr.Id
+                    });
+                    _context.SaveChanges();
+                    return "Success";
+                }
+                return string.Join('\n', res.Errors.Select(x => x.Description));
             }
             catch(Exception ex)
             {
@@ -90,7 +109,7 @@ namespace BlazorEnterprise.Server.Controllers
         }
 
         [Route("Edit"), HttpPost]
-        public string Edit([FromBody] BlazorEnterprise.Shared.UserViewModel user)
+        public string Edit([FromBody] UserViewModel user)
         {
             try
             {
@@ -141,6 +160,22 @@ namespace BlazorEnterprise.Server.Controllers
             {
                 return ex.Message;
             }
+        }
+        [Route("UserPermissions"), HttpGet]
+        public IEnumerable<RolePermissionModel> UserPermissions(string userName)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            var userId = _context.Users.FirstOrDefault(x => x.UserName == userName).Id;
+            var roleId = _context.UserRoles.FirstOrDefault(x => x.UserId == userId).RoleId;
+            var perms= _context.RolePermissions.Where(x => x.RoleId == roleId)
+                .Select(c => new RolePermissionModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    NavigationObject = c.NavigationItem
+                }).ToList();
+            return perms;
+            #pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

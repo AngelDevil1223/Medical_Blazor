@@ -41,12 +41,12 @@
                         }
                         <EditForm Model="Role" OnValidSubmit="PostForm">
                             <div class="text-danger">
-                                @*                                <DataAnnotationsValidator />
-                                    <ValidationSummary />*@
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label for="fname">Email:</label>
+                                    <label for="fname">Role Name:</label>
                                     <InputText @bind-Value="Role.RoleName" class="form-control" placeholder="Role" disabled="@IsEdit"></InputText>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
     {
         if (RoleId != "0")
         {
-            Role = await Http.GetFromJsonAsync<RoleViewModel>($"Roles/UserDetails?id={RoleId}");
+            Role = await Http.GetFromJsonAsync<RoleViewModel>($"Roles/RoleDetails?roleId={RoleId}");
         }
         Screens = ScreensProvider.Screens;
     }

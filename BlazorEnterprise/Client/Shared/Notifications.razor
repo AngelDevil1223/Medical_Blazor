@@ -1,0 +1,40 @@
+﻿<a href="#" class="search-toggle iq-waves-effect">
+    <i class="ri-notification-3-fill"></i>
+    <span class="bg-danger dots"></span>
+</a>
+<div class="iq-sub-dropdown">
+    <div class="iq-card shadow-none m-0">
+        <div class="iq-card-body p-0 ">
+            <div class="bg-primary p-3">
+                <h5 class="mb-0 text-white">All Notifications<small class="badge  badge-light float-right pt-1">@Messages.Count</small></h5>
+            </div>
+            @foreach (var m in Messages)
+            {
+                <a href="#" class="iq-sub-card">
+                    <div class="media align-items-center">
+                        <div class="media-body ml-3">
+                            <h6 class="mb-0 ">@m.Message</h6>
+                            <small class="float-right font-size-12">@m.DateSent</small>
+                            <p class="mb-0">@m.Sender</p>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    List<MessageNotification> Messages = new List<MessageNotification>
+    {
+        new MessageNotification(){Sender="Jane Doe",Message="Customers came today",DateSent="3 days ago"},
+        new MessageNotification(){Sender="Philiph John",Message="Approve the proposal in your queue",DateSent="Yesterday"},
+        new MessageNotification(){Sender="John Doe",Message="A courier was sent to deliver package",DateSent="Today"}
+    };
+    class MessageNotification
+    {
+        public string Sender { get; set; }
+        public string Message { get; set; }
+        public string DateSent { get; set; }
+    }
+}

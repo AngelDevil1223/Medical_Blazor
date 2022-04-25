@@ -6,8 +6,17 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="authentication/profile">Hello, @context.User.Identity?.Name!</a>
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <div class="iq-card shadow-none m-0">
+            <div class="iq-card-body p-0 ">
+                <div class="bg-primary p-3">
+                    <h5 class="mb-0 text-white line-height">Hello, @context.User.Identity?.Name!</h5>
+                    <span class="text-white font-size-12">Available</span>
+                </div>
+                <div class="d-inline-block w-100 text-center p-3">
+                    <button class="bg-primary iq-sign-btn" @onclick="BeginSignOut">Sign out<i class="ri-login-box-line ml-2"></i></button>
+                </div>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <a href="authentication/register">Register</a>
@@ -15,7 +24,7 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+@code {
     private async Task BeginSignOut(MouseEventArgs args)
     {
         await SignOutManager.SetSignOutState();
