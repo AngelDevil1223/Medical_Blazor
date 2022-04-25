@@ -1,8 +1,14 @@
 ﻿@inherits LayoutComponentBase
-
-<PageTitle>Blazor enterprise</PageTitle>
-<NavMenu />
-<div id="content-page" class="content-page">
-    @Body
-    <PageFooter />
-</div>
+<AuthorizeView>
+    <Authorized>
+        <PageTitle>Blazor enterprise</PageTitle>
+        <NavMenu />
+        <div id="content-page" class="content-page">
+            @Body
+            <PageFooter />
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <AuthRedirect />
+    </NotAuthorized>
+</AuthorizeView>

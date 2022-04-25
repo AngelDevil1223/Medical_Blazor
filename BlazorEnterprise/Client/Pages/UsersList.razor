@@ -93,6 +93,10 @@
                 Error = res;
                 StateHasChanged();
             }
+            else
+            {
+                Users = await Http.GetFromJsonAsync<UserViewModel[]>("Users/AllUsers");
+            }
         }
         catch (Exception ex)
         {

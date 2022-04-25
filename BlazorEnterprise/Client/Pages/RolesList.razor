@@ -28,13 +28,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var u in Users)
+                                @foreach (var r in Roles)
                                 {
                                     <tr>
-                                        <td>@u.RoleName</td>
+                                        <td>@r.RoleName</td>
                                         <td>
-                                            <button class="btn btn-info" @onclick="@(()=>Edit(u))"><i class="ri-pencil-fill mr-2"></i> Edit</button>
-                                            <button class="btn btn-danger" @onclick="@(()=>Delete(u))"><i class="ri-delete-bin-6-fill mr-2"></i> Delete</button>
+                                            <button class="btn btn-info" @onclick="@(()=>Edit(r))"><i class="ri-pencil-fill mr-2"></i> Edit</button>
+                                            <button class="btn btn-danger" @onclick="@(()=>Delete(r))"><i class="ri-delete-bin-6-fill mr-2"></i> Delete</button>
                                         </td>
                                     </tr>
                                 }
@@ -49,14 +49,14 @@
 @code
 {
     string Error = "";
-    RoleViewModel[] Users = Array.Empty<RoleViewModel>();
+    RoleViewModel[] Roles = Array.Empty<RoleViewModel>();
     public string DisplayName { get; set; }
     protected override async Task OnInitializedAsync()
     {
         ActiveScreen.Screen = "Roles";
         try
         {
-            Users = await Http.GetFromJsonAsync<RoleViewModel[]>("Roles/AllRoles");
+            Roles = await Http.GetFromJsonAsync<RoleViewModel[]>("Roles/AllRoles");
         }
         catch(Exception ex)
         {
@@ -82,10 +82,14 @@
         {
             var req = await Http.PostAsJsonAsync("Roles/Delete", role.RoleId);
             var res = await req.Content.ReadAsStringAsync();
-            if(!res.Contains("Success"))
+            if (!res.Contains("Success"))
             {
                 Error = res;
                 StateHasChanged();
+            }
+            else
+            {
+                Roles = await Http.GetFromJsonAsync<RoleViewModel[]>("Roles/AllRoles");
             }
         }
         catch (Exception ex)
